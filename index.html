@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cluster de proveedores de ganado - Octubre 2026</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#17202b;--mut:#5b6674;--line:#dfe3e8;--pri:#34506b;--pri2:#9db0c3;--acc:#b83227;--accbg:#fbecea;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151b;--card:#19202a;--ink:#e9eef3;--mut:#9aa7b5;--line:#2b3541;--pri:#86a8c9;--pri2:#46607a;--acc:#ff7b68;--accbg:#3a201d}}
+:root[data-theme="dark"]{--bg:#10151b;--card:#19202a;--ink:#e9eef3;--mut:#9aa7b5;--line:#2b3541;--pri:#86a8c9;--pri2:#46607a;--acc:#ff7b68;--accbg:#3a201d}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 56px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:16px}
+h1{font-size:28px;line-height:1.2;margin:0;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:4px 0 0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+.theme{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;color:var(--mut)}
+nav{display:flex;gap:4px;margin:18px 0 8px;overflow-x:auto}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;color:var(--mut);white-space:nowrap;font-weight:550}
+nav button[aria-selected="true"]{color:var(--ink);border-color:var(--pri)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 22px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;color:var(--mut)}
+.chip[aria-pressed="true"]{background:var(--pri);border-color:var(--pri);color:#fff}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{color:#0d1218}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#0d1218}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:22px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.kpi b{display:block;font-size:44px;line-height:1.1;font-weight:650;color:var(--pri)}
+.kpi span{color:var(--mut)}
+.kpi.warn b{color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.card h2{font-size:19px;margin:0 0 14px;font-weight:650}
+.bar{display:grid;grid-template-columns:150px 1fr 34px;gap:10px;align-items:center;margin:9px 0;width:100%;background:none;border:0;padding:0;text-align:left}
+.bar .t{height:16px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar .t i{display:block;height:100%;background:var(--pri)}
+.bar.off .t i{background:var(--pri2)}
+.bar.pend .t i{background:repeating-linear-gradient(45deg,var(--acc) 0 4px,transparent 4px 8px);width:100%!important;opacity:.6}
+.bar .l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .v{text-align:right;font-weight:650}
+.stack{display:flex;height:34px;border-radius:4px;overflow:hidden;margin:6px 0 12px}
+.stack div{display:flex;align-items:center;padding-left:10px;color:#fff;font-weight:650}
+.legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--mut)}
+.alerts{list-style:none;margin:0;padding:0}
+.alerts li{background:var(--accbg);border-left:4px solid var(--acc);border-radius:4px;padding:10px 14px;margin:8px 0}
+.alerts b{color:var(--acc)}
+.search{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 12px;font:inherit;min-width:220px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:620px}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:550}
+th button{background:none;border:0;padding:0;font-weight:550;color:var(--mut)}
+td.n,th.n{text-align:right}
+a{color:var(--pri);text-decoration:none}
+.tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:14px;border:1px solid var(--line);color:var(--mut)}
+.tag.bad{color:var(--acc);border-color:var(--acc);background:var(--accbg)}
+.tag.ok{color:var(--pri);border-color:var(--pri2)}
+dl{margin:0;display:grid;grid-template-columns:1fr auto;gap:8px 16px}
+dt{color:var(--mut)}dd{margin:0;font-weight:650;text-align:right}
+.chk{display:flex;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.chk input{width:22px;height:22px;accent-color:var(--pri)}
+.prog{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:6px 0 14px}
+.prog i{display:block;height:100%;background:var(--pri);width:0;transition:width .25s}
+.note{color:var(--mut);font-size:15px;margin-top:14px}
+section[hidden]{display:none}
+@media (max-width:560px){.bar{grid-template-columns:100px 1fr 28px}h1{font-size:23px}}
+@media (prefers-reduced-motion:reduce){.prog i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div><h1>Cluster de proveedores de ganado - TÍA</h1><p class="sub">Octubre 2026</p></div>
+ <button class="theme" id="theme" type="button">Cambiar tema</button>
+</header>
+<nav role="tablist" id="tabs">
+ <button role="tab" data-t="resumen" aria-selected="true">Resumen</button>
+ <button role="tab" data-t="prov" aria-selected="false">Proveedores</button>
+ <button role="tab" data-t="calidad" aria-selected="false">Ficha técnica</button>
+ <button role="tab" data-t="contrato" aria-selected="false">Contrato</button>
+</nav>
+
+<div class="filters" id="filters" aria-label="Filtrar por provincia"></div>
+
+<section id="resumen">
+ <div class="kpis" id="kpis"></div>
+ <div class="grid">
+  <div class="card"><h2>Reses por provincia</h2><div id="byProv"></div><p class="note">Toca una provincia para filtrar todo el tablero.</p></div>
+  <div class="card"><h2>Clasificación por categoría (total del cluster)</h2><div id="cats"></div></div>
+  <div class="card" style="grid-column:1/-1"><h2>Puntos de atención</h2><ul class="alerts" id="alerts"></ul></div>
+ </div>
+</section>
+
+<section id="prov" hidden>
+ <div class="card">
+  <div class="filters" style="margin-top:0"><input class="search" id="q" type="search" placeholder="Buscar proveedor o ubicación" aria-label="Buscar"></div>
+  <div class="scroll"><table>
+   <thead><tr><th>Proveedor</th><th>Contacto</th><th>Ubicación</th><th class="n"><button type="button" id="sort">Reses ▾</button></th><th>Estado</th></tr></thead>
+   <tbody id="rows"></tbody>
+  </table></div>
+  <p class="note">Por confirmar: el proveedor aún no reporta cantidad de reses.</p>
+ </div>
+</section>
+
+<section id="calidad" hidden>
+ <div class="grid">
+  <div class="card"><h2>Pesos mínimos</h2><dl><dt>Brazos</dt><dd>30 kg</dd><dt>Piernas</dt><dd>60 kg</dd></dl></div>
+  <div class="card"><h2>Parámetros de calidad</h2><dl>
+   <dt>Edad</dt><dd>2 - 3 años</dd>
+   <dt>Osificación</dt><dd>A - B - C</dd>
+   <dt>Color de grasa</dt><dd>Blanco - Amarillo claro</dd>
+   <dt>pH carne fresca</dt><dd>5.5 - 6.0</dd>
+   <dt>pH carne refrigerada</dt><dd>5.2 - 6.5</dd></dl></div>
+  <div class="card"><h2>Límites microbiológicos (ufc/g)</h2><dl>
+   <dt>Aerobios mesófilos</dt><dd>1.0 × 10<sup>6</sup></dd>
+   <dt>Escherichia coli</dt><dd>1.0 × 10<sup>2</sup></dd>
+   <dt>Salmonella spp</dt><dd>Ausencia</dd></dl></div>
+ </div>
+</section>
+
+<section id="contrato" hidden>
+ <div class="card">
+  <h2>Requisitos para el contrato de provisión</h2>
+  <div class="prog"><i id="prog"></i></div>
+  <div id="reqs"></div>
+  <p class="note" id="reqTxt"></p>
+ </div>
+</section>
+</div>
+
+<script>
+var D=[
+{n:"Ing. Teddy Constante",t:"0994528209",u:"Guayas",p:"Guayas",r:5},
+{n:"Yerovi",t:"0986357461",u:"Manabí - Pedro Pablo Gómez",p:"Manabí",r:5},
+{n:"Mvz. Kevin Peña",t:"0979708833",u:"Caluma",p:"Bolívar",r:null},
+{n:"Ney Meza",t:"0996878157",u:"Guayas - Balzar",p:"Guayas",r:3},
+{n:"Mvz. Andrés García",t:"0967408744",u:"El Oro: Pasaje y Santa Rosa",p:"El Oro",r:5},
+{n:"Dr. Carlos Barragán",t:"0988171408",u:"Bolívar - San Miguel",p:"Bolívar",r:null},
+{n:"Mvz. Kleber Cevallos",t:"092468730",u:"Guayas",p:"Guayas",r:5},
+{n:"Mvz. Chian Lee",t:"0980887926",u:"Esmeraldas",p:"Esmeraldas",r:5},
+{n:"Doménica Farfán",t:"0992936834",u:"Machala",p:"El Oro",r:null},
+{n:"Mvz. Roger Sánchez",t:"0991340024",u:"Santo Domingo",p:"Santo Domingo",r:5}];
+var CATS=[["Toro",15],["Torete",18],["Vacona",0],["Vaca",0]];
+var REQS=["RUC","Cédula","Certificado MIPRO","Certificado bancario"];
+var prov="Todas",q="",dir=-1,MAXR=5;
+function $(s){return document.querySelector(s)}
+function sum(a){return a.reduce(function(s,d){return s+(d.r||0)},0)}
+function vis(){return D.filter(function(d){return(prov==="Todas"||d.p===prov)&&(d.n+" "+d.u).toLowerCase().indexOf(q)>-1})}
+function provs(){var o={};D.forEach(function(d){o[d.p]=(o[d.p]||0)+(d.r||0)});return o}
+
+function renderFilters(){
+ var names=["Todas"].concat(Object.keys(provs()));
+ $("#filters").innerHTML=names.map(function(p){return '<button type="button" class="chip" data-p="'+p+'" aria-pressed="'+(p===prov)+'">'+p+'</button>'}).join("");
+}
+function renderKpis(){
+ var v=vis(),conf=v.filter(function(d){return d.r!==null}).length,pend=v.length-conf;
+ $("#kpis").innerHTML=
+  '<div class="kpi"><b>'+sum(v)+'</b><span>Reses disponibles</span></div>'+
+  '<div class="kpi"><b>'+v.length+'</b><span>Posibles proveedores</span></div>'+
+  '<div class="kpi"><b>'+conf+'</b><span>Con cantidad confirmada</span></div>'+
+  '<div class="kpi '+(pend?'warn':'')+'"><b>'+pend+'</b><span>Por confirmar</span></div>';
+}
+function renderProv(){
+ var P=provs(),keys=Object.keys(P).sort(function(a,b){return P[b]-P[a]});
+ $("#byProv").innerHTML=keys.map(function(k){
+  var cls=P[k]===0?"pend":(prov!=="Todas"&&prov!==k?"off":"");
+  return '<button type="button" class="bar '+cls+'" data-p="'+k+'"><span class="l">'+k+'</span><span class="t"><i style="width:'+(P[k]/13*100)+'%"></i></span><span class="v">'+P[k]+'</span></button>'}).join("");
+}
+function renderCats(){
+ var tot=CATS.reduce(function(s,c){return s+c[1]},0),col=["#34506b","#9db0c3"];
+ var st=CATS.filter(function(c){return c[1]>0}).map(function(c,i){return '<div style="width:'+(c[1]/tot*100)+'%;background:'+col[i]+'">'+c[1]+'</div>'}).join("");
+ var lg=CATS.map(function(c,i){return '<span'+(c[1]===0?' style="color:var(--acc);font-weight:650"':'')+'>'+c[0]+': '+c[1]+'</span>'}).join("");
+ $("#cats").innerHTML='<div class="stack">'+st+'</div><div class="legend">'+lg+'</div><p class="note">Total: '+tot+' reses. No hay oferta de vaconas ni vacas.</p>';
+}
+function renderAlerts(){
+ var A=[],pend=D.filter(function(d){return d.r===null}),P=provs(),tot=sum(D);
+ A.push('<b>'+pend.length+' proveedores sin cantidad de reses:</b> '+pend.map(function(d){return d.n}).join(", ")+'.');
+ D.forEach(function(d){if(d.t.length!==10)A.push('<b>Contacto por verificar:</b> el número de '+d.n+' tiene '+d.t.length+' dígitos (se esperan 10).')});
+ A.push('<b>Sin vaconas ni vacas:</b> la oferta actual es solo de toros y toretes.');
+ A.push('<b>Concentración en Guayas:</b> '+P["Guayas"]+' de '+tot+' reses ('+Math.round(P["Guayas"]/tot*100)+'%).');
+ $("#alerts").innerHTML=A.map(function(a){return '<li>'+a+'</li>'}).join("");
+}
+function renderRows(){
+ var v=vis().slice().sort(function(a,b){return dir*((a.r||0)-(b.r||0))});
+ $("#rows").innerHTML=v.map(function(d){
+  var bad=d.t.length!==10;
+  return '<tr><td>'+d.n+'</td><td><a href="tel:'+d.t+'">'+d.t+'</a>'+(bad?' <span class="tag bad">Verificar</span>':'')+'</td><td>'+d.u+'</td><td class="n">'+(d.r===null?'-':d.r)+'</td><td>'+(d.r===null?'<span class="tag bad">Por confirmar</span>':'<span class="tag ok">Confirmado</span>')+'</td></tr>'}).join("")
+  ||'<tr><td colspan="5">Sin resultados. Cambia la búsqueda o el filtro de provincia.</td></tr>';
+ $("#sort").textContent="Reses "+(dir<0?"▾":"▴");
+}
+function renderReqs(){
+ $("#reqs").innerHTML=REQS.map(function(r,i){return '<label class="chk"><input type="checkbox" data-i="'+i+'"><span>'+r+'</span></label>'}).join("");
+ updReqs();
+}
+function updReqs(){
+ var n=document.querySelectorAll("#reqs input:checked").length;
+ $("#prog").style.width=(n/REQS.length*100)+"%";
+ $("#reqTxt").textContent=n+" de "+REQS.length+" documentos listos. Úsalo como lista de verificación durante la reunión.";
+}
+function renderAll(){renderFilters();renderKpis();renderProv();renderRows()}
+
+document.addEventListener("click",function(e){
+ var b=e.target.closest("[data-p]");
+ if(b){prov=(prov===b.dataset.p&&b.classList.contains("bar"))?"Todas":b.dataset.p;renderAll();}
+ var t=e.target.closest("#tabs button");
+ if(t){
+  document.querySelectorAll("#tabs button").forEach(function(x){x.setAttribute("aria-selected",x===t)});
+  ["resumen","prov","calidad","contrato"].forEach(function(id){$("#"+id).hidden=(id!==t.dataset.t)});
+  $("#filters").hidden=(t.dataset.t==="calidad"||t.dataset.t==="contrato");
+ }
+});
+$("#q").addEventListener("input",function(e){q=e.target.value.toLowerCase();renderKpis();renderRows()});
+$("#sort").addEventListener("click",function(){dir=-dir;renderRows()});
+$("#reqs").addEventListener("change",updReqs);
+$("#theme").addEventListener("click",function(){
+ var r=document.documentElement,dark=matchMedia("(prefers-color-scheme:dark)").matches;
+ var cur=r.getAttribute("data-theme")||(dark?"dark":"light");
+ r.setAttribute("data-theme",cur==="dark"?"light":"dark");
+});
+renderCats();renderAlerts();renderReqs();renderAll();
+</script>
+</body>
+</html>
